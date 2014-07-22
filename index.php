@@ -53,6 +53,4 @@ if (is_file(APP_COMMON_fUNCTION_PATH. 'common.php')) {
 //5.show
 show();
 
-model('shop', 'getAllShop');
-
 
