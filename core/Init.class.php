@@ -1,10 +1,11 @@
 <?php
 /**
  * Yf框架
- * 启动加载
+ * 启动初始化加载
  *
  * @package index.php
- * @author tony.yang <tongyyang@pptv.com>
+ * @author tony.yang <yangyiphper@sina.cn>
+ * @version $Id: Module.class.php 2014-07-16 $
  */
 
 /**
@@ -66,7 +67,8 @@ function __autoload($class_name) {
 
 /**
  * 读取配置
- * @param  [string] $name
+ * 
+ * @param  string $name
  * @return  value
  */
 function config($name) {
@@ -118,6 +120,8 @@ function config($name) {
 
 /**
  * 自动创建目录
+ *
+ * @return  void
  */
 function autoCreateDir() {
 
@@ -197,7 +201,9 @@ class IndexController extends Controller {
 }
 
 /**
- * show
+ * show 输出加载框架
+ *
+ * @return void
  */
 function show() {
 	$php_self_page =  @$_SERVER['PATH_INFO'];
@@ -290,6 +296,7 @@ function module($module_name = '', $module_function_name = '') {
 
 /**
  * 实例化controller/执行方法
+ * 
  * @param  string $controller_name 
  * @param  string $controller_function_name 
  * @return object

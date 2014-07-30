@@ -3,10 +3,9 @@
  * Yf框架
  *
  * @package index.php
- * @author tony.yang <tongyyang@pptv.com>
+ * @author tony.yang <yangyiphper@sina.cn>
  * @version  $ID 2014-03-27 $
  */
-
 // error_reporting(E_ERROR | E_WARNING | E_NOTICE | E_PARSE);
 //error_reporting(E_ERROR | E_PARSE);
 

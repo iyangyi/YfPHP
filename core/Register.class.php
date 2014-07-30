@@ -1,9 +1,11 @@
 <?php
 /**
  * Yf框架
+ * 注册变量
  *
- * @package 注册变量
- * @author tony.yang <tongyyang@pptv.com>
+ * @package Register.class.php
+ * @author tony.yang <yangyiphper@sina.cn>
+ * @version $Id: Module.class.php 2014-07-16 $
  */
 
 class Register {
@@ -11,9 +13,10 @@ class Register {
 	protected static $_config;
 
 	/**
-	 * get
-	 * @param  [string] $name 
-	 * @return value
+	 * 获取变量值
+	 * 
+	 * @param  string $name 
+	 * @return string
 	 */
 	public static function get($name) {
 		if (self::isRegister($name)) {
@@ -25,14 +28,15 @@ class Register {
 	}
 
 	/**
-	 * set
-	 * @param  [string] $name 
-	 * @param  [strinfg $value
- 	 * @return value
+	 * 设置变量值
+	 * 
+	 * @param  string $name 
+	 * @param  string $value
+ 	 * @return string
 	 */
 	public static function set($name, $value) {
-		if (empty($name)) {
-			Error::write('set config error');
+		if (!isset($name) || !isset($value)) {
+			Error::write('register name or value not null');
 		}
 		self::$_config[$name] = $value;
 		return self::$_config[$name];
@@ -40,12 +44,12 @@ class Register {
 
 
 	/**
-	 * isSet
-	 * @param  [string]  $name [description]
-	 * @return 
+	 * 判断变量是否注册
+	 * 
+	 * @param  string $name
+	 * @return bool
 	 */
 	public static function isRegister($name) {
 		return isset(self::$_config[$name]);
 	}
-
 }

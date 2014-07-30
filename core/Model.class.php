@@ -3,8 +3,10 @@
  * Yf框架
  * model基类
  *
- * @package index.php
- * @author tony.yang <tongyyang@pptv.com>
+ * @package Model.class.php
+ * @author tony.yang <yangyiphper@sina.cn>
+ * @version $Id: Module.class.php 2014-07-16 $
+ * 
  */
 class Model {
 
@@ -34,6 +36,7 @@ class Model {
 
 	/**
 	 * 获取子model方法
+	 * 
 	 * @return object
 	 */
 	private function getChildClassName() {
@@ -47,6 +50,7 @@ class Model {
 
 	/**
 	 * 连接数据库
+	 * 
 	 * @return object
 	 */
 	private function connectDb() {
@@ -126,7 +130,7 @@ class Model {
 	}
 
 	/**
-	 * 增加`符号转义
+	 * 分开字符转义
 	 * @param string $value
 	 * @param string
 	 */
@@ -141,7 +145,8 @@ class Model {
 	
 	/**
 	 * prepare准备
-	 * @return [type] [description]
+	 * 
+	 * @return $this
 	 */
 	private function prepare($sql){
 		$this->stmt = $this->mysql->prepare($sql);
@@ -150,6 +155,7 @@ class Model {
 
 	/**
 	 * 产生占位符
+	 * 
 	 * @param  int $len 
 	 * @return string
 	 */
@@ -163,6 +169,7 @@ class Model {
 
 	/**
 	 * 产生绑定值
+	 * 
 	 * @param  int $len 
 	 * @return string
 	 */
@@ -308,7 +315,7 @@ class Model {
 		$row_count =  $this->prepare($sql)->bind()->execute();
 		if ($row_count) {
 			if (is_array($row_count) && $row_count[2]) {
-				Error::write($row_count[2]);
+				Error::write('MySQL Error：' . $row_count[2]);
 			} else {
 				//单个查询直接给出组合好的一维数组
 				if (strpos($field, ',') === false && $field != '*') {
@@ -337,7 +344,7 @@ class Model {
 		$row_count =  $this->prepare($sql)->bind()->execute();
 		if ($row_count) {
 			if (is_array($row_count) && $row_count[2]) {
-				Error::write($row_count[2]);
+				Error::write('MySQL Error：' . $row_count[2]);
 			} else {
 				preg_match_all('/\,/', $field, $match);
 				if (count($match[0]) == 1) {
@@ -388,6 +395,7 @@ class Model {
 
 	/**
 	 * having 字句，分组后筛选
+	 * 
 	 * @param  string $field 
 	 * @return $this
 	 */
@@ -401,6 +409,7 @@ class Model {
 
 	/**
 	 * 排序order by
+	 * 
 	 * @param  string $field 
 	 * @return $this
 	 */
@@ -414,6 +423,7 @@ class Model {
 
 	/**
 	 * limit分页
+	 * 
 	 * @param  int $start
 	 * @param  int $end
 	 * @return $this
@@ -433,7 +443,7 @@ class Model {
 
 		
 	/**
-	 * [join description]
+	 * join 连接
 	 * @param  string $join_table_name
 	 * @param  string $join_type
 	 * @param  string $alise_join_table_name
@@ -452,7 +462,8 @@ class Model {
 	}
 
 	/**
-	 * join on 的条件
+	 * join on 的条件，必须和join连在一起使用
+	 * 
 	 * @param  string $r
 	 * @return $this
 	 */
@@ -470,7 +481,8 @@ class Model {
 	
 	
 	/**
-	 * 返回执行的sql
+	 * 获得最后执行的sql
+	 * 
 	 * @return string
 	 */
 	public function getLastSql() {
@@ -489,10 +501,22 @@ class Model {
 		}
 	}
 
+	/**
+	 * 获取表table名
+	 * 
+	 * @return string
+	 */
 	public function getTable() {
 		return $this->table;
 	}
 
+	/**
+	 * 调用pdo里面的原始方法
+	 * 
+	 * @param  string $method  
+	 * @param  sring $arguments
+	 * @return minu
+	 */
 	public function __call($method, $arguments) {
 		return call_user_func_array(array($this->mysql, $method), $arguments);
 	}
