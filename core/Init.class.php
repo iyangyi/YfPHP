@@ -76,10 +76,10 @@ function config($name) {
 		return Register::get($name);
 	}
 	else {
-		$app_runtime_config = APP_RUNTIME_PATH . 'config'. DS. 'config.php';
+		$app_runtime_config = APP_RUNDATA_PATH . 'config'. DS. 'config.php';
 		//缓存时间为1天
 		if (is_file($app_runtime_config) && (time() - filemtime($app_runtime_config) < 86400)) {
-			$config =  unserialize((file_get_contents(APP_RUNTIME_PATH . 'config'. DS . 'config.php')));
+			$config =  unserialize((file_get_contents(APP_RUNDATA_PATH . 'config'. DS . 'config.php')));
 			if ($name && isset($config[$name])) {
 				Register::set($name, $config[$name]);
 				return $config[$name];
@@ -98,11 +98,11 @@ function config($name) {
 				$config = array_merge($config_frame, $config_app);
 			}
 			//生成缓存文件
-			if (!is_dir(APP_RUNTIME_PATH)) {
-				mkdir(APP_RUNTIME_PATH);
+			if (!is_dir(APP_RUNDATA_PATH)) {
+				mkdir(APP_RUNDATA_PATH);
 			}
-			if (!is_dir(APP_RUNTIME_PATH . DS . 'config')) {
-				mkdir(APP_RUNTIME_PATH . DS . 'config');
+			if (!is_dir(APP_RUNDATA_PATH . DS . 'config')) {
+				mkdir(APP_RUNDATA_PATH . DS . 'config');
 			}
 			@unlink($app_runtime_config);
 			@touch($app_runtime_config);
@@ -149,6 +149,11 @@ function autoCreateDir() {
 		file_put_contents($config_file, $config);
 	}
 
+	//application
+	if (!is_dir(APP_APPLICATION_PATH)) {
+		@mkdir(APP_APPLICATION_PATH);
+	}
+
 	//controller && IndexController.class.php
 	if (!is_dir(APP_CONTROLLER_PATH)) {
 		@mkdir(APP_CONTROLLER_PATH);
@@ -165,6 +170,11 @@ class IndexController extends Controller {
 		file_put_contents($index_controller_file, $index);
 	}
 
+	//view
+	if (!is_dir(APP_VIEW_PATH)) {
+		@mkdir(APP_VIEW_PATH);
+	}
+
 	//model
 	if (!is_dir(APP_MODEL_PATH)) {
 		@mkdir(APP_MODEL_PATH);
@@ -174,58 +184,64 @@ class IndexController extends Controller {
 	if (!is_dir(APP_MODULE_PATH)) {
 		@mkdir(APP_MODULE_PATH);
 	}
-
-	//view
-	if (!is_dir(APP_TEMPLATE_PATH)) {
-		@mkdir(APP_TEMPLATE_PATH);
-	}
-
+	
 	//public
 	if (!is_dir(APP_PUBLIC_PATH)) {
 		@mkdir(APP_PUBLIC_PATH);
 	}
 
-	//runtime
-	if (!is_dir(APP_RUNTIME_PATH)) {
-		@mkdir(APP_RUNTIME_PATH);
+	//rundata
+	if (!is_dir(APP_RUNDATA_PATH)) {
+		@mkdir(APP_RUNDATA_PATH);
 	}
-	if (!is_dir(APP_RUNTIME_PATH . DS. 'config')) {
-		@mkdir(APP_RUNTIME_PATH . DS. 'config');
+	if (!is_dir(APP_RUNDATA_PATH . DS. 'config')) {
+		@mkdir(APP_RUNDATA_PATH . DS. 'config');
 	}
-	if (!is_dir(APP_RUNTIME_PATH . DS. 'tpl')) {
-		@mkdir(APP_RUNTIME_PATH . DS. 'tpl');
+	if (!is_dir(APP_RUNDATA_PATH . DS. 'tpl')) {
+		@mkdir(APP_RUNDATA_PATH . DS. 'tpl');
 	}
-	if (!is_dir(APP_RUNTIME_PATH . DS. 'log')) {
-		@mkdir(APP_RUNTIME_PATH . DS. 'log');
+	if (!is_dir(APP_RUNDATA_PATH . DS. 'log')) {
+		@mkdir(APP_RUNDATA_PATH . DS. 'log');
 	}
 }
 
 /**
  * show 输出加载框架
  *
+ * @param int $show_mode (1-web 2-cli)
  * @return void
  */
-function show() {
-	$php_self_page =  @$_SERVER['PATH_INFO'];
-	if (isset($php_self_page)) {
-		$path_info_array = explode('/', trim($php_self_page,'/'));
-		if (isset($path_info_array[0]) && $path_info_array[0]) {
-			$c = $path_info_array[0];
+function show($show_mode) {
+	//web
+	if ($show_mode == 1) {
+		$php_self_page =  @$_SERVER['PATH_INFO'];
+		if (isset($php_self_page)) {
+			$path_info_array = explode('/', trim($php_self_page,'/'));
+			if (isset($path_info_array[0]) && $path_info_array[0]) {
+				$c = $path_info_array[0];
+			}
+			else {
+				$c = config('default_controller');
+			}
+			if (isset($path_info_array[1]) && $path_info_array[1]) {
+				$f = $path_info_array[1];
+			}
+			else {
+				$f = config('default_function');
+			}
+		} else {
+			$a = config('default_application');
+			$c = config('default_controller');
+			$f = config('default_function');
 		}
-		else {
-			$c = config('default_index_controller');
-		}
-		if (isset($path_info_array[1]) && $path_info_array[1]) {
-			$f = $path_info_array[1];
-		}
-		else {
-			$f = config('default_index_action');
-		}
+	} else {
+		//cli
+		$cli = getopt('a:c:f:');
+		$a = isset($cli['a']) ? $cli['a'] : config('default_application');
+		$c = isset($cli['c']) ? $cli['c'] : config('default_controller');
+		$f = isset($cli['f']) ? $cli['f'] : config('default_function');
 	}
-	else {
-		$c = config('default_index_controller');
-		$f = config('default_index_action');
-	}
+
 	//伪静态
 	if (strpos($f, '.')) {
 		$pos = strpos ($f, '.');
@@ -293,33 +309,3 @@ function module($module_name = '', $module_function_name = '') {
 		return new module();
 	}
 }
-
-/**
- * 实例化controller/执行方法
- * 
- * @param  string $controller_name 
- * @param  string $controller_function_name 
- * @return object
- */
-function controller($controller_name = '', $controller_function_name = '') {
-	if ($controller_name) {
-		$controller_class_name = ucfirst($controller_name) . 'Controller';
-		//有方法就执行方法
-		if ($controller_function_name) {
-			$controller = new $controller_class_name();
-			if (method_exists($controller, $controller_function_name)) {
-				$controller->$controller_function_name();
-				return $controller;
-			} else {
-				Error::write($controller_class_name. '类的' . $controller_function_name . '方法不存在');
-			}
-		} else {
-			return new $controller_class_name();
-		}
-	}else {
-		return new Controller();
-	}
-}
-
-
-

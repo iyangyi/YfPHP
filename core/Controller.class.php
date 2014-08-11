@@ -31,7 +31,7 @@ class Controller {
 		if (!Register::isRegister($name)) {
 			require_once FRAME_CORE_PATH . 'smarty/Smarty.class.php';
 			$smarty = new Smarty();
-			$smarty->setTemplateDir(APP_TEMPLATE_PATH);  
+			$smarty->setTemplateDir(APP_VIEW_PATH);  
 			$smarty->setCompileDir(APP_COMPILE_PATH);
 			$smarty->left_delimiter  = '<{';  
 			$smarty->right_delimiter = '}>';

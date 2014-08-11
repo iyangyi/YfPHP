@@ -11,9 +11,10 @@
 $config = array(
 	'user_smarty'=>true,
 	'auto_create_dir' => true,
-	'default_index_controller' => 'Index',
-	'default_index_action' => 'index',
-	'default_index_model' => 'index'
+	'default_application' => 'web',
+	'default_controller' => 'index',
+	'default_function' => 'index',
+	'default_model' => 'index'
 );
 
 return $config;
