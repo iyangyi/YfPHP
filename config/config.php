@@ -9,7 +9,7 @@
  */
 
 $config = array(
-	'user_smarty'=>true,
+	'user_smarty'=> true,
 	'auto_create_dir' => true,
 	'default_application' => 'web',
 	'default_controller' => 'index',

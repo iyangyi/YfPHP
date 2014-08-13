@@ -247,6 +247,9 @@ function show($show_mode) {
 		$pos = strpos ($f, '.');
    		$f =  substr($f, 0 , $pos);
 	}
+	//申明常量
+	define('APP_CONTROLLER', $c);
+	define('APP_FUNCTION', $f);
 	$controller_name = ucfirst($c) . 'Controller';
 	$controller = new $controller_name();
 	if (method_exists($controller, $f)) {

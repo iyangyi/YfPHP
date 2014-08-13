@@ -20,6 +20,7 @@ define('APP_PATH', dirname($_SERVER['SCRIPT_FILENAME']));
 define('DS', DIRECTORY_SEPARATOR);//目录分割符
 define('FRAME_PATH', (dirname(__FILE__)));
 define('FRAME_CONFIG_PATH', FRAME_PATH . DS. 'config'. DS);
+define('FRAME_LIBS_PATH', FRAME_PATH . DS. 'libs'. DS);
 define('FRAME_COMMON_fUNCTION_PATH', FRAME_PATH . DS. 'common'. DS);
 define('FRAME_CORE_PATH', FRAME_PATH . DS. 'core'. DS);
 define('APP_COMMON_fUNCTION_PATH', APP_PATH . DS. 'common'. DS);

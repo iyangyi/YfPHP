@@ -29,13 +29,12 @@ class Controller {
 	public function setSmarty() {
 		$name = 'set_smarty';
 		if (!Register::isRegister($name)) {
-			require_once FRAME_CORE_PATH . 'smarty/Smarty.class.php';
+			require_once FRAME_LIBS_PATH . 'smarty/Smarty.class.php';
 			$smarty = new Smarty();
 			$smarty->setTemplateDir(APP_VIEW_PATH);  
 			$smarty->setCompileDir(APP_COMPILE_PATH);
 			$smarty->left_delimiter  = '<{';  
 			$smarty->right_delimiter = '}>';
-			echo 34;die;  
 			Register::set($name, $smarty);
 		}
 		return Register::get($name);
@@ -64,7 +63,11 @@ class Controller {
 	 * @param  string $html
 	 * @return void
 	 */
-	public function display($html) {
+	public function display($html = '') {
+		if (empty($html)) {
+			$function_name = $this->getFunction();
+			$html = $function_name . '.html';
+		}
 		if ($this->template_mode == 2) {
 			//分解变量
 			if (is_array($this->out) && $this->out) {
@@ -98,6 +101,30 @@ class Controller {
 			}
 			return $this->smarty->fetch($html);
 		}
+	}
+
+	/**
+	 * 获取分组
+	 * @return string
+	 */
+	public function getGroup() {
+		return APP_APPLICATION;
+	}
+
+	/**
+	 * 获取controller
+	 * @return string
+	 */
+	public function getController() {
+		return APP_CONTROLLER;
+	}
+
+	/**
+	 * 获取function
+	 * @return string
+	 */
+	public function getFunction() {
+		return APP_FUNCTION;
 	}
 
 	/**
