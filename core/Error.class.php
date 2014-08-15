@@ -11,7 +11,12 @@
 
 class Error {
 
+	/**
+	 * 屏幕上输出错误信息
+	 * @param string $msg
+	 * @return void
+	 */
 	public  static function write($msg) {
-		echo $msg . "<br>";
+		trigger_error($msg, E_USER_ERROR);
 	}
 }
